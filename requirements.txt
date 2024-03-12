@@ -1,1 +1,3 @@
 pytest
+python-decouple
+discord-py-interactions
