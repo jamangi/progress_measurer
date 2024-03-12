@@ -118,8 +118,34 @@ async def report_autocomplete(ctx: AutocompleteContext):
     :param ctx: (object) contains information about the interaction
     """
     # Fetch the list of reports from the json. Make sure you respond within three seconds
-    wishlist = reports_quickfetch(int(ctx.author_id))
-    await ctx.send(choices=wishlist)
+    unreported_entries = unreported_entries_quickfetch(int(ctx.author_id))
+    await ctx.send(choices=unreported_entries)
+
+
+@base_command.subcommand(sub_cmd_name="history",
+                         sub_cmd_description="Get information about a past session")
+@slash_option(name="entry", description="Select which session you want to know about",
+              opt_type=OptionType.STRING, required=True, autocomplete=True)
+async def history(ctx: SlashContext, entry):
+    """Get information about a past session.
+
+    :param ctx: (object) contains information about the interaction
+    :param entry:
+    """
+    history_report = history_main(entry_name=entry)
+    # Send a message confirming that the report has been logged
+    await ctx.send(history_report)
+
+
+@history.autocomplete("entry")
+async def report_autocomplete(ctx: AutocompleteContext):
+    """Fetches the list of complete entries for a user to choose from
+
+    :param ctx: (object) contains information about the interaction
+    """
+    # Fetch the list of completed entries from the json. Make sure you respond within three seconds
+    completed_entries = completed_entries_quickfetch(int(ctx.author_id))
+    await ctx.send(choices=completed_entries)
 
 
 if __name__ == "__main__":
