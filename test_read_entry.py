@@ -1,5 +1,5 @@
 import json
-import prog_frontend
+import prog_backend
 
 
 def test_read_json():
@@ -42,6 +42,6 @@ def test_read_json():
     with open(filename, mode='w', encoding='utf-8') as f:
         json.dump(alldata, f)
 
-    res = prog_frontend.read_session(hangout_title)
+    res = prog_backend.read_session(hangout_title)
 
     assert res == data1

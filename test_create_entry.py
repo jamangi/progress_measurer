@@ -1,5 +1,5 @@
 import json
-import prog_frontend
+import prog_backend
 import os
 
 
@@ -44,8 +44,8 @@ def test_create_json():
     }
 
     alldata = [data1, data2]
-    prog_frontend.create_session(**data1) # requires keyword args
-    prog_frontend.create_session(**data2)
+    prog_backend.create_session(**data1) # requires keyword args
+    prog_backend.create_session(**data2)
     with open(filename, mode='r', encoding='utf-8') as f:
         res = json.load(f)
         assert len(res) and res[0] == alldata[0]
