@@ -87,6 +87,41 @@ async def start_entry(ctx: SlashContext, hangout_name, duration, subtask1, subta
     await ctx.send(session_start_message)
 
 
+@base_command.subcommand(sub_cmd_name="report",
+                         sub_cmd_description="Report the results of a session")
+@slash_option(name="entry", description="Select which session you'll be reporting on",
+              opt_type=OptionType.STRING, required=True, autocomplete=True)
+@slash_option(name="completion", description="What percentage of the tasks that were set otu to do were completed?",
+              opt_type=OptionType.NUMBER, required=True)
+@slash_option(name="comment", description="Any additional comments?",
+              opt_type=OptionType.STRING, required=False)
+async def report(ctx: SlashContext, entry, completion, comment=None):
+    """Report on the results of a session. How much of the goal you set out to accomplish actually got done?
+
+    :param ctx: (object) contains information about the interaction
+    :param entry:
+    :param completion:
+    :param comment:
+    """
+    report_confirmation_message = report_main(entry_name=entry,
+                                              user_id=int(ctx.author_id),
+                                              completion=completion,
+                                              comment=comment)
+    # Send a message confirming that the report has been logged
+    await ctx.send(report_confirmation_message)
+
+
+@report.autocomplete("entry")
+async def report_autocomplete(ctx: AutocompleteContext):
+    """Fetches the list of incomplete reports for a user to choose from
+
+    :param ctx: (object) contains information about the interaction
+    """
+    # Fetch the list of reports from the json. Make sure you respond within three seconds
+    wishlist = reports_quickfetch(int(ctx.author_id))
+    await ctx.send(choices=wishlist)
+
+
 if __name__ == "__main__":
     # Set the cwd to the directory where this file lives
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
