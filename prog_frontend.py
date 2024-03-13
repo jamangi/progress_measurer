@@ -12,6 +12,10 @@ async def on_ready():
     print("Ready")
     print(f"This bot is owned by {bot.owner}")
 
+    # If there's no json, add one
+    if not os.path.isfile(filename) or not os.path.isfile(filename):
+        json_first_setup()
+
 
 # @listen(CommandError, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
 # async def on_command_error(event: CommandError):
