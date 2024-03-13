@@ -37,10 +37,14 @@ def test_create_json():
         "subtask5": None
     }
 
+    time_now_in_seconds = int(datetime.now().timestamp())
+    duration_in_minutes = 60  # 60 minutes
+    duration_in_seconds = duration_in_minutes * 60
+
     data2 = {
         # "filename": filename, <- filename not added to the json file by create
         "hangout_name": hangout_title,
-        "duration": 60,
+        "duration": duration_in_minutes,
         "maker": {username_key: "TestUser", discord_id_key: 1},  # username instead of nickname
         "participants": [  # converts participants into a list and includes the maker
             {nickname_key: "JimJam", discord_id_key: 1},
@@ -55,8 +59,8 @@ def test_create_json():
             {'subtask': "Task X", 'finished': False},
             # {'subtask': None, 'finished': False} # This task isn't included since it was None
         ],
-        'start_time': int(datetime.now().timestamp()),  # create function adds this
-        'end_time': None  # create function adds this
+        'start_time': time_now_in_seconds,  # create function adds this
+        'end_time': time_now_in_seconds + duration_in_seconds  # start time + (60 minutes worth of seconds)
     }
 
     #######################
@@ -73,14 +77,19 @@ def test_create_json():
         assert data.get('duration') and data['duration'] == 60
         assert data.get('maker') == data2['maker']
 
-        # to compare a list of dictionaries, I'll need to turn the dictionaries into frozen sets
-        set_expected = [frozenset(d) for d in data2.get('participants')]
-        set_actual = [frozenset(d) for d in data.get('participants')]
-        assert set(set_expected) == set(set_actual)
+        # Sort the list of dictionaries within data and data2
+        sorted_expected = sorted(data2.get('participants'), key=lambda d: sorted(d.items()))
+        sorted_actual = sorted(data.get('participants'), key=lambda d: sorted(d.items()))
 
-        set_expected = [frozenset(d) for d in data2.get('subtasks')]
-        set_actual = [frozenset(d) for d in data.get('subtasks')]
-        assert set(set_expected) == set(set_actual)
+        # Compare the sorted lists of dictionaries
+        assert sorted_expected == sorted_actual
+
+        # do the same for subtasks
+        sorted_expected = sorted(data2.get('subtasks'), key=lambda d: sorted(d.items()))
+        sorted_actual = sorted(data.get('subtasks'), key=lambda d: sorted(d.items()))
+
+        # Compare the sorted lists of dictionaries
+        assert sorted_expected == sorted_actual
 
         start_time_expected = data2.get('start_time')
         start_time_actual = data.get('start_time')
