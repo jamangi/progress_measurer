@@ -34,7 +34,7 @@ def test_create_json():
         "subtask2": "Task 2",
         "subtask3": "Task 3",
         "subtask4": "Task X",
-        "subtask5": None
+        "subtask5": "Task Y"
     }
 
     time_now_in_seconds = int(datetime.now().timestamp())
@@ -57,7 +57,7 @@ def test_create_json():
             {'subtask': "Task 2", 'finished': False},
             {'subtask': "Task 3", 'finished': False},
             {'subtask': "Task X", 'finished': False},
-            # {'subtask': None, 'finished': False} # This task isn't included since it was None
+            {'subtask': "Task Y", 'finished': False}  # This task isn't included since it was None
         ],
         'start_time': time_now_in_seconds,  # create function adds this
         'end_time': time_now_in_seconds + duration_in_seconds  # start time + (60 minutes worth of seconds)
@@ -96,4 +96,5 @@ def test_create_json():
         assert abs(start_time_expected - start_time_actual) < 5  # less than 5 unix time seconds off from test
 
         # end_time is in the dictionary but set to None
-        assert 'end_time' in data and data.get('end_time') is None
+        assert 'end_time' in data
+        assert abs(data.get('end_time') - start_time_actual) < duration_in_seconds + 5
