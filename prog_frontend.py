@@ -38,7 +38,7 @@ base_command = SlashCommand(
                          sub_cmd_description="Initiate a hangout session")
 @slash_option(name="hangout_name", description="What will you call this hangout? 99 characters or less",
               opt_type=OptionType.STRING, required=True)
-@slash_option(name="duration", description="How many hours will the hangout last?",
+@slash_option(name="duration", description="How many minutes will the hangout last?",
               opt_type=OptionType.NUMBER, required=True)
 @slash_option(name="subtask1", description="Define a subtask for your hangout",
               opt_type=OptionType.STRING, required=True)
@@ -91,7 +91,7 @@ async def start_entry(ctx: SlashContext, hangout_name, duration, subtask1, subta
                          sub_cmd_description="Report the results of a session")
 @slash_option(name="entry", description="Select which session you'll be reporting on",
               opt_type=OptionType.STRING, required=True, autocomplete=True)
-@slash_option(name="completion", description="What percentage of the tasks that were set otu to do were completed?",
+@slash_option(name="completion", description="What percentage of the tasks that were set out to do were completed?",
               opt_type=OptionType.NUMBER, required=True)
 @slash_option(name="comment", description="Any additional comments?",
               opt_type=OptionType.STRING, required=False)
