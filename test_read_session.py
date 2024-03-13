@@ -12,7 +12,7 @@ def test_read_json():
         "filename": filename,
         "hangout_name": hangout_title,
         "duration": 60,
-        "maker": "TestUser",
+        "maker": {username_key: "User1", discord_id_key: 1},
         "participant2": {username_key: "User2", discord_id_key: 2},
         "participant3": {username_key: "User3", discord_id_key: 3},
         "participant4": {username_key: "User4", discord_id_key: 4},
@@ -27,7 +27,7 @@ def test_read_json():
         "filename": filename,
         "hangout_name": hangout_title2,
         "duration": 60,
-        "maker": "TestUser",
+        "maker": {username_key: "User1", discord_id_key: 1},
         "participant2": {username_key: "User2", discord_id_key: 2},
         "participant3": {username_key: "User3", discord_id_key: 3},
         "participant4": {username_key: "User4", discord_id_key: 4},
@@ -42,6 +42,8 @@ def test_read_json():
     with open(filename, mode='w', encoding='utf-8') as f:
         json.dump(alldata, f)
 
-    res = prog_backend.read_session(hangout_title)
+    res1 = prog_backend.read_session(hangout_title)
+    assert res1 == data1
 
-    assert res == data1
+    res2 = prog_backend.read_session(hangout_title2)
+    assert res2 == data2
