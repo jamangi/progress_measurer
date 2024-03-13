@@ -98,3 +98,4 @@ def test_create_json():
         # end_time is in the dictionary but set to None
         assert 'end_time' in data
         assert abs(data.get('end_time') - start_time_actual) < duration_in_seconds + 5
+        assert abs(data.get('end_time') - (start_time_actual + (duration_in_minutes * 60))) < 15
