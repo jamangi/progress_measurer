@@ -1,49 +1,47 @@
 import json
 import prog_backend
+import os
+from datetime import datetime
 
 
 def test_read_json():
-    username_key = "username"
-    discord_id_key = "discord_id"
+    # delete database if it exists
+    # put data into the json file
+    # - could look like data2 from the test_create file
+    # use the read function to read it
+    # ensure the returned data is formatted correctly
+
     filename = "test_database.json"
-    hangout_title = "Sample Hangout"
-    hangout_title2 = "Sample Hangout 2"
-    data1 = {
-        "filename": filename,
-        "hangout_name": hangout_title,
-        "duration": 60,
-        "maker": {username_key: "User1", discord_id_key: 1},
-        "participant2": {username_key: "User2", discord_id_key: 2},
-        "participant3": {username_key: "User3", discord_id_key: 3},
-        "participant4": {username_key: "User4", discord_id_key: 4},
-        "subtask1": "Task 1",
-        "subtask2": "Task 2",
-        "subtask3": "Task 3",
-        "subtask4": "Task 4",
-        "subtask5": "Task 5"
-    }
+
+
+    username_key = "username"
+    nickname_key = "nick"
+    discord_id_key = "discord_id"
+    hangout_title = "Hangout Sample"
 
     data2 = {
-        "filename": filename,
-        "hangout_name": hangout_title2,
+        # "filename": filename, <- filename not added to the json file by create
+        "hangout_name": hangout_title,
         "duration": 60,
-        "maker": {username_key: "User1", discord_id_key: 1},
-        "participant2": {username_key: "User2", discord_id_key: 2},
-        "participant3": {username_key: "User3", discord_id_key: 3},
-        "participant4": {username_key: "User4", discord_id_key: 4},
-        "subtask1": "Task 1",
-        "subtask2": "Task 2",
-        "subtask3": "Task 3",
-        "subtask4": "Task 4",
-        "subtask5": "Task 5"
+        "maker": {username_key: "TestUser", discord_id_key: 1},  # username instead of nickname
+        "participants": [  # converts participants into a list and includes the maker
+            {nickname_key: "JimJam", discord_id_key: 1},
+            {nickname_key: "Jack", discord_id_key: 2},
+            {nickname_key: "Jill", discord_id_key: 3},
+            {nickname_key: "Princess Peach", discord_id_key: 4},
+        ],
+        "subtasks": [  # converts subtasks into a list
+            {'subtask': "Task 1", 'finished': False},
+            {'subtask': "Task 2", 'finished': False},
+            {'subtask': "Task 3", 'finished': False},
+            {'subtask': "Task X", 'finished': False},
+            # {'subtask': None, 'finished': False} # This task isn't included since it was None
+        ],
+        'start_time': int(datetime.now().timestamp()),  # create function adds this
+        'end_time': None  # create function adds this
     }
-    alldata = [data1, data2]
 
     with open(filename, mode='w', encoding='utf-8') as f:
-        json.dump(alldata, f)
+        json.dump([data2], f)
 
-    res1 = prog_backend.read_session(hangout_title)
-    assert res1 == data1
-
-    res2 = prog_backend.read_session(hangout_title2)
-    assert res2 == data2
+    result = prog_backend.read_session(filename, hangout_title)
