@@ -30,7 +30,7 @@ def test_unfinish_subtask():
     expected_value = False
     edit_value(filename=filename, session_name='Quiet murder', field='subtasks', new_value=False, subfield=1,
                subsubfield='finished')
-    results = read_session(filename, 'Quiet Murder')
+    results = read_session(filename, 'Quiet murder')
     test_value = results['subtasks'][1]['finished']
     assert test_value == expected_value
 
@@ -39,7 +39,7 @@ def test_change_hangout_name():
     """Try changing the name of the session called Sample Hangout"""
     expected_value = "Sit on a cactus"
     edit_value(filename=filename, session_name='Sample Hangout', field="hangout_name", new_value="Sit on a cactus")
-    test_value = read_session('wishes_and_points.yaml', 'Raspberry Kitten', 'points')['hangout_name']
+    test_value = read_session(filename, 'Sample Hangout')['hangout_name']
     assert test_value == expected_value
 
 
