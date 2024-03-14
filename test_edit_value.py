@@ -35,14 +35,6 @@ def test_unfinish_subtask():
     assert test_value == expected_value
 
 
-def test_change_hangout_name():
-    """Try changing the name of the session called Sample Hangout"""
-    expected_value = "Sit on a cactus"
-    edit_value(filename=filename, session_name='Sample Hangout', field="hangout_name", new_value="Sit on a cactus")
-    test_value = read_session(filename, 'Sample Hangout')['hangout_name']
-    assert test_value == expected_value
-
-
 def test_change_duration():
     """Try changing the duration of the session called Sample Hangout"""
     expected_duration = 400
@@ -96,6 +88,14 @@ def test_change_start_time():
     expected_end_time = expected_start_time + duration
     assert test_start_time == expected_start_time
     assert test_end_time == expected_end_time
+
+
+def test_change_hangout_name():
+    """Try changing the name of the session called Sample Hangout"""
+    expected_value = "Sit on a cactus"
+    edit_value(filename=filename, session_name='Sample Hangout', field="hangout_name", new_value="Sit on a cactus")
+    test_value = read_session(filename, 'Sample Hangout')['hangout_name']
+    assert test_value == expected_value
 
 
 if __name__ == "__main__":
