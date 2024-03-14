@@ -86,19 +86,10 @@ def read_session(filename: str, hangout_name: str) -> Dict[str, Any]:
     raise ValueError(f"No session found for hangout: {hangout_name}")
 
 
-def edit_value(filename: str, session_name: str, field: str, new_value: Any, subfield: Optional[str] = None,
-               subsubfield: Optional[str] = None, change: Optional[str] = None) -> None:
+def edit_value(filename: str, session_name: str, field: str, new_value,
+               subfield=None, subsubfield=None, change=None):
     """
     Edit a value in the session data for a specific hangout in the JSON file.
-
-    Args:
-        filename (str): The name of the JSON file.
-        session_name (str): The name of the session to edit data for.
-        field (str): The field to edit in the session data.
-        new_value (Any): The new value to set.
-        subfield (str, optional): Subfield within the field to edit. Defaults to None.
-        subsubfield (str, optional): Sub-subfield within the subfield to edit. Defaults to None.
-        change (str, optional): Specify 'add' or 'remove' to add or remove a value from a list field. Defaults to None.
 
     Raises:
         ValueError: If the session name is not found in the JSON file.
@@ -112,7 +103,15 @@ def edit_value(filename: str, session_name: str, field: str, new_value: Any, sub
                     if change == 'add':
                         session[field].append(new_value)
                     elif change == 'remove':
-                        session[field].remove(new_value)
+                        # Check if participant exists before removing
+                        participant_found = False
+                        for participant in session[field]:
+                            if participant == new_value:
+                                session[field].remove(participant)
+                                participant_found = True
+                                break
+                        if not participant_found:
+                            raise ValueError(f"Participant {new_value} not found in session participants.")
                     else:
                         session[field] = new_value
                 else:
@@ -121,28 +120,13 @@ def edit_value(filename: str, session_name: str, field: str, new_value: Any, sub
                     else:
                         session[field][subfield][subsubfield] = new_value
 
-                file.seek(0)
-                json.dump(sessions, file, indent=4)
+                # Adjust end_time if duration or start_time is changed
+                if field == 'duration' or field == 'start_time':
+                    session['end_time'] = session['start_time'] + session['duration'] * 60
+
+                with open(filename, 'w') as file:
+                    json.dump(sessions, file, indent=4)
                 break
+
         else:
             raise ValueError(f"No session found with name: {session_name}")
-
-
-
-        
-def edit_value(filename, session_name, field, new_value, subfield=None, subsubfield=None, change=None):
-    with open(filename, 'r') as file:
-        data = json.load(file)
-
-    for entry in data:
-        if entry.get('hangout_name') == session_name:
-            if subfield is None:
-                entry[field] = new_value
-            elif subsubfield is None:
-                entry[field][subfield] = new_value
-            else:
-                entry[field][subfield][subsubfield] = new_value
-            break  
-
-    with open(filename, 'w') as file:
-        json.dump(data, file)
