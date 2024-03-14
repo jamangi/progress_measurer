@@ -85,7 +85,7 @@ def test_change_start_time():
     test_start_time = results['start_time']
     duration = results['duration']
     test_end_time = results['end_time']
-    expected_end_time = expected_start_time + duration
+    expected_end_time = expected_start_time + duration*60
     assert test_start_time == expected_start_time
     assert test_end_time == expected_end_time
 
