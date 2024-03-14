@@ -18,7 +18,7 @@ def setup_teardown():
 def test_finish_subtask():
     """Change a subtask's 'finished' status to True to reflect that it's been finished"""
     expected_value = True
-    edit_value(filename=filename, session_name='Sample Hangout', field='subtask', new_value=True, subfield=3,
+    edit_value(filename=filename, session_name='Sample Hangout', field='subtasks', new_value=True, subfield=3,
                subsubfield='finished')
     results = read_session(filename, 'Sample Hangout')
     test_value = results['subtasks'][3]['finished']
@@ -28,7 +28,7 @@ def test_finish_subtask():
 def test_unfinish_subtask():
     """Change a subtask's 'finished' status into False to reflect that it actually hadn't been finished"""
     expected_value = False
-    edit_value(filename=filename, session_name='Quiet murder', field='subtask', new_value=False, subfield=1,
+    edit_value(filename=filename, session_name='Quiet murder', field='subtasks', new_value=False, subfield=1,
                subsubfield='finished')
     results = read_session(filename, 'Quiet Murder')
     test_value = results['subtasks'][1]['finished']
