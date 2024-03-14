@@ -33,7 +33,7 @@ def test_get_message():
     """Creates a session called "Eat vegetables" and then makes sure the result from confirm_create_session is a
     message with the expected format and information"""
     # Establish what we want the message to look like
-    expected_message = (f"A hangout session, Eat vegetables, has been started between Kat and Posi. This "
+    expected_message = (f"A hangout session, Eat vegetables, has been started between Kat and Anytime. This "
                         f"session will last 125 minutes, during which the following five objectives should be "
                         f"completed:"
                         f"\n- Go to the kitchen"
