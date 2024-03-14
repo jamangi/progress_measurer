@@ -130,3 +130,19 @@ def edit_value(filename: str, session_name: str, field: str, new_value: Any, sub
 
 
         
+def edit_value(filename, session_name, field, new_value, subfield=None, subsubfield=None, change=None):
+    with open(filename, 'r') as file:
+        data = json.load(file)
+
+    for entry in data:
+        if entry.get('hangout_name') == session_name:
+            if subfield is None:
+                entry[field] = new_value
+            elif subsubfield is None:
+                entry[field][subfield] = new_value
+            else:
+                entry[field][subfield][subsubfield] = new_value
+            break  
+
+    with open(filename, 'w') as file:
+        json.dump(data, file)
