@@ -191,7 +191,7 @@ def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
             completed_subtasks.append(f'- {subtask_name}')
 
     if not completed_subtasks:
-        raise ValueError("No subtasks reported as completed.")
+        raise ValueError("The subtask that was supposed to be reported has not been recorded as finished. This is probably an issue with the code. The data file may be compromised. Do not use any more commands and immediately investigate or contact someone familiar with the code.")
 
     total_tasks = len(session_data['subtasks'])  # Total number of subtasks
     completed_count = len(completed_subtasks)  # Number of completed subtasks
