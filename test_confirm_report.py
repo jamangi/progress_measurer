@@ -30,7 +30,7 @@ def test_one_subtask_reported():
     edit_value(filename, 'Sample Hangout', 'subtasks', True,
                subfield=1, subsubfield='finished')
 
-    # Run confirm_create_sesssion, saving the string it returns as `message`
+    # Run confirm_report, saving the string it returns as `message`
     message = confirm_report(filename, 'Sample Hangout', fin_task1="subtask2")
 
     # Check to make sure the string that confirm_create_session returned matches exactly with the expected message
@@ -65,7 +65,7 @@ def test_five_subtasks_reported():
     edit_value(filename, 'Sample Hangout', 'subtasks', True,
                subfield=4, subsubfield='finished')
 
-    # Run confirm_create_sesssion, saving the string it returns as `message`
+    # Run confirm_report, saving the string it returns as `message`
     message = confirm_report(filename, 'Sample Hangout',
                              fin_task1="subtask1",
                              fin_task2="subtask2",
