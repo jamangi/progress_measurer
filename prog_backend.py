@@ -130,3 +130,88 @@ def edit_value(filename: str, session_name: str, field: str, new_value,
 
         else:
             raise ValueError(f"No session found with name: {session_name}")
+
+
+def confirm_create_session(filename: str, hangout_name: str) -> str:
+    """
+    Confirm the creation of a session by reading session data from a JSON file.
+
+    Args:
+        filename (str): The name of the JSON file to read.
+        hangout_name (str): The name of the hangout to confirm creation for.
+
+    Returns:
+        str: A message confirming the creation of the specified hangout session.
+    """
+    session_data = read_session(filename, hangout_name)
+
+    participants = [participant['nick'] for participant in session_data['participants']]
+    participant_names = ' and '.join(participants)
+
+    num_tasks = len(session_data['subtasks'])
+
+    # Mapping numerical values to their string representations
+    num_mapping = {
+        1: 'one',
+        2: 'two',
+        3: 'three',
+        4: 'four',
+        5: 'five'
+        # Add more mappings as needed
+    }
+
+    num_tasks_str = num_mapping.get(num_tasks, str(num_tasks))  # Default to numerical value if not found in mapping
+
+    objectives = [subtask['subtask'] for subtask in session_data['subtasks']]
+    objectives_str = "\n".join([f"- {objective}" for objective in objectives])
+
+    if num_tasks == 1:
+        objectives_label = "objective"
+    else:
+        objectives_label = "objectives"
+
+    message = (
+        f"A hangout session, {hangout_name}, has been started between {participant_names}. This "
+        f"session will last {session_data['duration']} minutes, during which the following {num_tasks_str} {objectives_label} should be "
+        f"completed:\n"
+        f"{objectives_str}\n"
+        f"Don't forget to report your achievements. Anchors aweigh!"
+    )
+
+    return message
+
+def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
+    """
+    Confirm the completion of subtasks for a specific hangout and generate a report message.
+
+    Args:
+        filename (str): The name of the JSON file to read.
+        hangout_name (str): The name of the hangout to generate the report for.
+        **kwargs: Keyword arguments representing completed subtasks.
+
+    Returns:
+        str: A message confirming the completion of subtasks for the specified hangout.
+    """
+    session_data = read_session(filename, hangout_name)
+
+    completed_subtasks = []
+    for key, value in kwargs.items():
+        if value:
+            subtask_name = key.split('_')[0]  # Extract the subtask name from the keyword
+            completed_subtasks.append(f'- {subtask_name}')
+
+    if not completed_subtasks:
+        raise ValueError("No subtasks reported as completed.")
+
+    total_tasks = len(session_data['subtasks'])  # Total number of subtasks
+    completed_count = len(completed_subtasks)  # Number of completed subtasks
+    percentage = completed_count / total_tasks * 100  # Calculate completion percentage
+
+    # Update the message formatting
+    message = (
+        f"Report for {hangout_name}: the following objectives have been completed\n"
+        f"{chr(10).join(completed_subtasks)}\n"
+        f"{hangout_name} is {int(percentage)}% complete!"
+    )
+
+    return message

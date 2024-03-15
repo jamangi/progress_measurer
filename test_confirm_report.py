@@ -24,7 +24,7 @@ def test_one_subtask_reported():
     # Establish what we want the message to look like
     expected_message = (f"Report for Sample Hangout: the following objectives have been completed"
                         f"\n- subtask2"
-                        f"\nSample Hangout is 100% complete!")
+                        f"\nSample Hangout is 20% complete!")
 
     # Flip the desired subtask to True
     edit_value(filename, 'Sample Hangout', 'subtasks', True,
