@@ -52,7 +52,7 @@ def test_remove_participant():
     """Try removing a participant from the participants list in Quiet murder"""
     expected_participants = [{'nick': 'Raspberry Kitten', 'discord_id': 1015276712948400148}]
     removed_participant = {'nick': 'Grey', 'discord_id': 319472632493768705}
-    edit_value(filename=filename, session_name='Sample Hangout', field="participants", new_value=removed_participant,
+    edit_value(filename=filename, session_name='Quiet murder', field="participants", new_value=removed_participant,
                change='remove')
     results = read_session(filename, 'Quiet murder')
     test_participants = [participant for participant in results['participants']]
