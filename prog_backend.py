@@ -181,24 +181,13 @@ def confirm_create_session(filename: str, hangout_name: str) -> str:
     return message
 
 def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
-    """
-    Confirm the completion of subtasks for a specific hangout and generate a report message.
-
-    Args:
-        filename (str): The name of the JSON file to read.
-        hangout_name (str): The name of the hangout to generate the report for.
-        **kwargs: Keyword arguments representing completed subtasks.
-
-    Returns:
-        str: A message confirming the completion of subtasks for the specified hangout.
-    """
     session_data = read_session(filename, hangout_name)
 
     completed_subtasks = []
     for key, value in kwargs.items():
         if value:
-            subtask_name = key.split('_')[0]  # Extract the subtask name from the keyword
-            completed_subtasks.append(f'- {subtask_name}')
+            subtask_name = key.split('_')[1]  # Extract the subtask name from the keyword (e.g., "fin_task1")
+            completed_subtasks.append(f'- subtask{subtask_name[4:]}')
 
     if not completed_subtasks:
         raise ValueError("No subtasks reported as completed.")
@@ -207,7 +196,7 @@ def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
     completed_count = len(completed_subtasks)  # Number of completed subtasks
     percentage = completed_count / total_tasks * 100  # Calculate completion percentage
 
-    # Update the message formatting
+    # Generate the message using the expected subtask names
     message = (
         f"Report for {hangout_name}: the following objectives have been completed\n"
         f"{chr(10).join(completed_subtasks)}\n"
