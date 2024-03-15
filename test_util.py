@@ -14,11 +14,11 @@ def make_example_database():
               'participants': [{'nick': 'TestUser', 'discord_id': 1},
                                {'nick': 'User2', 'discord_id': 2},
                                {'nick': 'User3', 'discord_id': 3}],
-              'subtasks': [{'subtask': "subtask_name", 'finished': False},
-                           {'subtask': "subtask_name", 'finished': False},
-                           {'subtask': "subtask_name", 'finished': False},
-                           {'subtask': "subtask_name", 'finished': False},
-                           {'subtask': "subtask_name", 'finished': False}],
+              'subtasks': [{'subtask': "subtask1", 'finished': False},
+                           {'subtask': "subtask2", 'finished': False},
+                           {'subtask': "subtask3", 'finished': False},
+                           {'subtask': "subtask4", 'finished': False},
+                           {'subtask': "subtask5", 'finished': False}],
               'start_time': 1710316871,
               'end_time': 1710316931
               }
