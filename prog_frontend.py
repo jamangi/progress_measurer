@@ -104,18 +104,18 @@ async def start_entry(ctx: SlashContext, hangout_name, duration, subtask1, subta
 
 @base_command.subcommand(sub_cmd_name="report",
                          sub_cmd_description="Report the results of a session")
-@slash_option(name="hangout", description="Select which hangout session you'll be reporting on",
+@slash_option(name="hangout", description="Select which hangout session (that you're a part of) you'll be reporting on",
               opt_type=OptionType.STRING, required=True, autocomplete=True)
 @slash_option(name="finished_subtask1", description="A subtask that you want to report has been completed",
-              opt_type=OptionType.STRING, required=True, autocomplete=True)
+              opt_type=OptionType.STRING, required=False, autocomplete=True)
 @slash_option(name="finished_subtask2", description="A subtask that you want to report has been completed",
-              opt_type=OptionType.STRING, required=True, autocomplete=True)
+              opt_type=OptionType.STRING, required=False, autocomplete=True)
 @slash_option(name="finished_subtask3", description="A subtask that you want to report has been completed",
-              opt_type=OptionType.STRING, required=True, autocomplete=True)
+              opt_type=OptionType.STRING, required=False, autocomplete=True)
 @slash_option(name="finished_subtask4", description="A subtask that you want to report has been completed",
-              opt_type=OptionType.STRING, required=True, autocomplete=True)
+              opt_type=OptionType.STRING, required=False, autocomplete=True)
 @slash_option(name="finished_subtask5", description="A subtask that you want to report has been completed",
-              opt_type=OptionType.STRING, required=True, autocomplete=True)
+              opt_type=OptionType.STRING, required=False, autocomplete=True)
 async def report(ctx: SlashContext, hangout, finished_subtask1=None, finished_subtask2=None, finished_subtask3=None,
                  finished_subtask4=None, finished_subtask5=None):
     """Report on the results of a hangout session. How much of the goal you set out to accomplish actually got done?
@@ -167,62 +167,6 @@ async def report_subtask_autocomplete(ctx: AutocompleteContext):
     session_data = read_session(config("FILENAME"), session_name)
     subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
     await ctx.send(choices=subtasks_list)
-
-
-# @report.autocomplete("finished_subtask2")
-# async def report_subtask1_autocomplete(ctx: AutocompleteContext):
-#     """Fetches the list of subtasks for a user to choose from the session that has been chosen. If no session has been
-#     chosen yet, this will not work.
-#
-#     :param ctx: (object) contains information about the interaction
-#     """
-#     # Fetch the list of subtasks for the chosen session from the json. Make sure you respond within three seconds
-#     session_name = ctx.args[0]
-#     session_data = read_session(config("FILENAME"), session_name)
-#     subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
-#     await ctx.send(choices=subtasks_list)
-#
-#
-# @report.autocomplete("finished_subtask3")
-# async def report_subtask1_autocomplete(ctx: AutocompleteContext):
-#     """Fetches the list of subtasks for a user to choose from the session that has been chosen. If no session has been
-#     chosen yet, this will not work.
-#
-#     :param ctx: (object) contains information about the interaction
-#     """
-#     # Fetch the list of subtasks for the chosen session from the json. Make sure you respond within three seconds
-#     session_name = ctx.args[0]
-#     session_data = read_session(config("FILENAME"), session_name)
-#     subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
-#     await ctx.send(choices=subtasks_list)
-#
-#
-# @report.autocomplete("finished_subtask4")
-# async def report_subtask_autocomplete(ctx: AutocompleteContext):
-#     """Fetches the list of subtasks for a user to choose from the session that has been chosen. If no session has been
-#     chosen yet, this will not work.
-#
-#     :param ctx: (object) contains information about the interaction
-#     """
-#     # Fetch the list of subtasks for the chosen session from the json. Make sure you respond within three seconds
-#     session_name = ctx.args[0]
-#     session_data = read_session(config("FILENAME"), session_name)
-#     subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
-#     await ctx.send(choices=subtasks_list)
-#
-#
-# @report.autocomplete("finished_subtask5")
-# async def report_subtask1_autocomplete(ctx: AutocompleteContext):
-#     """Fetches the list of subtasks for a user to choose from the session that has been chosen. If no session has been
-#     chosen yet, this will not work.
-#
-#     :param ctx: (object) contains information about the interaction
-#     """
-#     # Fetch the list of subtasks for the chosen session from the json. Make sure you respond within three seconds
-#     session_name = ctx.args[0]
-#     session_data = read_session(config("FILENAME"), session_name)
-#     subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
-#     await ctx.send(choices=subtasks_list)
 
 # -------------------------------------------------------------------------------------------------------------------- #
 
