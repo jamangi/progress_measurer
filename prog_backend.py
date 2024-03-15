@@ -185,9 +185,10 @@ def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
 
     completed_subtasks = []
     for key, value in kwargs.items():
-        if value:
-            subtask_name = key.split('_')[1]  # Extract the subtask name from the keyword (e.g., "fin_task1")
-            completed_subtasks.append(f'- subtask{subtask_name[4:]}')
+        if value.startswith('subtask'):  # Check if the value starts with 'subtask'
+            subtask_number = int(value.split('subtask')[1])  # Extract the subtask number
+            subtask_name = f'subtask{subtask_number}'  # Format the subtask name
+            completed_subtasks.append(f'- {subtask_name}')
 
     if not completed_subtasks:
         raise ValueError("No subtasks reported as completed.")
