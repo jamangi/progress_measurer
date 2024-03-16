@@ -1,3 +1,5 @@
+import json
+from typing import Any, Dict, List, Optional
 """A bunch of functions that do important stuff in the background"""
 
 import os
@@ -58,3 +60,148 @@ def create_session(filename, hangout_name, duration, maker, subtask1, subtask2, 
     with open(filename, "w") as entries_file:
         json.dump(entries, entries_file)
 
+
+
+
+def read_session(filename: str, hangout_name: str) -> Dict[str, Any]:
+    """
+    Read session data from a JSON file.
+
+    Args:
+        filename (str): The name of the JSON file to read.
+        hangout_name (str): The name of the hangout to read data for.
+
+    Returns:
+        dict: The session data for the specified hangout.
+    """
+    with open(filename, 'r') as file:
+        sessions = json.load(file)
+
+    # Find the session data for the specified hangout name
+    for session in sessions:
+        if session.get('hangout_name') == hangout_name:
+            return session
+
+    # If no session found for the specified hangout name
+    raise ValueError(f"No session found for hangout: {hangout_name}")
+
+
+def edit_value(filename: str, session_name: str, field: str, new_value,
+               subfield=None, subsubfield=None, change=None):
+    """
+    Edit a value in the session data for a specific hangout in the JSON file.
+
+    Raises:
+        ValueError: If the session name is not found in the JSON file.
+    """
+    with open(filename, 'r+') as file:
+        sessions = json.load(file)
+
+        for session in sessions:
+            if session.get('hangout_name') == session_name:
+                if subfield is None:
+                    if change == 'add':
+                        session[field].append(new_value)
+                    elif change == 'remove':
+                        # Check if participant exists before removing
+                        participant_found = False
+                        for participant in session[field]:
+                            if participant == new_value:
+                                session[field].remove(participant)
+                                participant_found = True
+                                break
+                        if not participant_found:
+                            raise ValueError(f"Participant {new_value} not found in session participants.")
+                    else:
+                        session[field] = new_value
+                else:
+                    if subsubfield is None:
+                        session[field][subfield] = new_value
+                    else:
+                        session[field][subfield][subsubfield] = new_value
+
+                # Adjust end_time if duration or start_time is changed
+                if field == 'duration' or field == 'start_time':
+                    session['end_time'] = session['start_time'] + session['duration'] * 60
+
+                with open(filename, 'w') as file:
+                    json.dump(sessions, file, indent=4)
+                break
+
+        else:
+            raise ValueError(f"No session found with name: {session_name}")
+
+
+def confirm_create_session(filename: str, hangout_name: str) -> str:
+    """
+    Confirm the creation of a session by reading session data from a JSON file.
+
+    Args:
+        filename (str): The name of the JSON file to read.
+        hangout_name (str): The name of the hangout to confirm creation for.
+
+    Returns:
+        str: A message confirming the creation of the specified hangout session.
+    """
+    session_data = read_session(filename, hangout_name)
+
+    participants = [participant['nick'] for participant in session_data['participants']]
+    participant_names = ' and '.join(participants)
+
+    num_tasks = len(session_data['subtasks'])
+
+    # Mapping numerical values to their string representations
+    num_mapping = {
+        1: 'one',
+        2: 'two',
+        3: 'three',
+        4: 'four',
+        5: 'five'
+        # Add more mappings as needed
+    }
+
+    num_tasks_str = num_mapping.get(num_tasks, str(num_tasks))  # Default to numerical value if not found in mapping
+
+    objectives = [subtask['subtask'] for subtask in session_data['subtasks']]
+    objectives_str = "\n".join([f"- {objective}" for objective in objectives])
+
+    if num_tasks == 1:
+        objectives_label = "objective"
+    else:
+        objectives_label = "objectives"
+
+    message = (
+        f"A hangout session, {hangout_name}, has been started between {participant_names}. This "
+        f"session will last {session_data['duration']} minutes, during which the following {num_tasks_str} {objectives_label} should be "
+        f"completed:\n"
+        f"{objectives_str}\n"
+        f"Don't forget to report your achievements. Anchors aweigh!"
+    )
+
+    return message
+
+def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
+    session_data = read_session(filename, hangout_name)
+
+    completed_subtasks = []
+    for key, value in kwargs.items():
+        if value.startswith('subtask'):  # Check if the value starts with 'subtask'
+            subtask_number = int(value.split('subtask')[1])  # Extract the subtask number
+            subtask_name = f'subtask{subtask_number}'  # Format the subtask name
+            completed_subtasks.append(f'- {subtask_name}')
+
+    if not completed_subtasks:
+        raise ValueError("The subtask that was supposed to be reported has not been recorded as finished. This is probably an issue with the code. The data file may be compromised. Do not use any more commands and immediately investigate or contact someone familiar with the code.")
+
+    total_tasks = len(session_data['subtasks'])  # Total number of subtasks
+    completed_count = len(completed_subtasks)  # Number of completed subtasks
+    percentage = completed_count / total_tasks * 100  # Calculate completion percentage
+
+    # Generate the message using the expected subtask names
+    message = (
+        f"Report for {hangout_name}: the following objectives have been completed\n"
+        f"{chr(10).join(completed_subtasks)}\n"
+        f"{hangout_name} is {int(percentage)}% complete!"
+    )
+
+    return message
