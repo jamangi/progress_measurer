@@ -82,64 +82,69 @@ def test_subtasks_too_long_error():
     """Tests to make sure an exception is raised if any of the subtasks are over 80 characters, but not if they're
     all under 80 characters."""
     # Try for an error when subtask1 is too long
-    start_entry_main(filename=filename,
-                     hangout_name='subtask1 81 characters',
-                     duration=300,
-                     maker=Kat,
-                     subtask1='a'*81,
-                     subtask2='b'*80,
-                     subtask3='c'*80,
-                     subtask4='d'*80,
-                     subtask5='e'*80,
-                     participant2=Posi)
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='subtask1 81 characters',
+                         duration=300,
+                         maker=Kat,
+                         subtask1='a'*81,
+                         subtask2='b'*80,
+                         subtask3='c'*80,
+                         subtask4='d'*80,
+                         subtask5='e'*80,
+                         participant2=Posi)
 
     # Try for an error when subtask2 is too long
-    start_entry_main(filename=filename,
-                     hangout_name='subtask2 81 characters',
-                     duration=300,
-                     maker=Kat,
-                     subtask1='a'*80,
-                     subtask2='b'*81,
-                     subtask3='c'*80,
-                     subtask4='d'*80,
-                     subtask5='e'*80,
-                     participant2=Posi)
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='subtask2 81 characters',
+                         duration=300,
+                         maker=Kat,
+                         subtask1='a'*80,
+                         subtask2='b'*81,
+                         subtask3='c'*80,
+                         subtask4='d'*80,
+                         subtask5='e'*80,
+                         participant2=Posi)
 
     # Try for an error when subtask3 is too long
-    start_entry_main(filename=filename,
-                     hangout_name='subtask3 81 characters',
-                     duration=300,
-                     maker=Kat,
-                     subtask1='a'*80,
-                     subtask2='b'*80,
-                     subtask3='c'*81,
-                     subtask4='d'*80,
-                     subtask5='e'*80,
-                     participant2=Posi)
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='subtask3 81 characters',
+                         duration=300,
+                         maker=Kat,
+                         subtask1='a'*80,
+                         subtask2='b'*80,
+                         subtask3='c'*81,
+                         subtask4='d'*80,
+                         subtask5='e'*80,
+                         participant2=Posi)
 
     # Try for an error when subtask4 is too long
-    start_entry_main(filename=filename,
-                     hangout_name='subtask4 81 characters',
-                     duration=300,
-                     maker=Kat,
-                     subtask1='a'*80,
-                     subtask2='b'*80,
-                     subtask3='c'*80,
-                     subtask4='d'*81,
-                     subtask5='e'*80,
-                     participant2=Posi)
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='subtask4 81 characters',
+                         duration=300,
+                         maker=Kat,
+                         subtask1='a'*80,
+                         subtask2='b'*80,
+                         subtask3='c'*80,
+                         subtask4='d'*81,
+                         subtask5='e'*80,
+                         participant2=Posi)
 
     # Try for an error when subtask5 is too long
-    start_entry_main(filename=filename,
-                     hangout_name='subtask5 81 characters',
-                     duration=300,
-                     maker=Kat,
-                     subtask1='a'*80,
-                     subtask2='b'*80,
-                     subtask3='c'*80,
-                     subtask4='d'*80,
-                     subtask5='e'*81,
-                     participant2=Posi)
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='subtask5 81 characters',
+                         duration=300,
+                         maker=Kat,
+                         subtask1='a'*80,
+                         subtask2='b'*80,
+                         subtask3='c'*80,
+                         subtask4='d'*80,
+                         subtask5='e'*81,
+                         participant2=Posi)
 
 
 def test_self_among_participants_error():
