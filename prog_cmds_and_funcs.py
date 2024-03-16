@@ -62,36 +62,15 @@ def start_entry_main(filename, hangout_name, duration, maker, subtask1, subtask2
         raise ValueError("Duration cannot be greater than one day")
 
     # Create hangout session data
-    session_data = {
-        "hangout_name": hangout_name,
-        "duration": duration,
-        "maker": {
-            "display_name": maker.display_name,
-            "username": maker.username,
-            "id": maker.id
-        },
-        "participant2": {
-            "display_name": participant2.display_name,
-            "username": participant2.username,
-            "id": participant2.id
-        },
-        "subtask1": subtask1,
-        "subtask2": subtask2,
-        "subtask3": subtask3,
-        "subtask4": subtask4,
-        "subtask5": subtask5,
-        "start_time": int(datetime.now().timestamp()),
-        "end_time": None  # To be updated later
-    }
+    create_session(filename, hangout_name, duration, maker, subtask1, subtask2,
+                   subtask3, subtask4, subtask5, participant2, participant3, participant4)
 
-    # Write session data to JSON file
-    with open(filename, 'w') as file:
-        json.dump([session_data], file, indent=4)
+    data = read_session(filename, hangout_name)
 
     # Generate message for Discord
-    message = (f"A hangout session, {hangout_name}, has been started between {maker.display_name} and "
-               f"{participant2.display_name}. This session will last {duration} minutes, during which the following "
-               f"five objectives should be completed:\n"
+    message = (f"A hangout session, {hangout_name}, has been started between "
+               f"{' and '.join([p['nick'] for p in data['participants']])}. This session will last {duration} minutes, during which the following "
+               f"five objectives should be completed:"
                f"\n- {subtask1}"
                f"\n- {subtask2}"
                f"\n- {subtask3}"
