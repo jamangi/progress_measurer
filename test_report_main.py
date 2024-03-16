@@ -66,7 +66,7 @@ def test_already_reported_error():
         report_main(filename=filename,
                     hangout_name='Quiet murder',
                     user_id=1015276712948400148,
-                    finished_subtask1='subtask3')
+                    finished_subtask1='Eat it')
 
 
 def test_one_subtask_reported():
@@ -107,18 +107,6 @@ def test_five_subtasks_reported():
                         f"\n- subtask5"
                         f"\nSample Hangout is 100% complete!")
 
-    # Flip the desired subtasks to True
-    edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=0, subsubfield='finished')
-    edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=1, subsubfield='finished')
-    edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=2, subsubfield='finished')
-    edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=3, subsubfield='finished')
-    edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=4, subsubfield='finished')
-
     # Run report_main, saving the string it returns as `message`
     message = report_main(filename, 'Sample Hangout', 1,
                           fin_task1="subtask1",
@@ -129,7 +117,7 @@ def test_five_subtasks_reported():
 
     # Check to make sure the 'finished' values were all flipped to True
     results = read_session(filename, 'Sample Hangout')
-    assert all([subtask['finished'] is True for subtask in results])
+    assert all([subtask['finished'] is True for subtask in results['subtasks']])
 
     # Check to make sure the string that confirm_create_session returned matches exactly with the expected message
     assert message == expected_message

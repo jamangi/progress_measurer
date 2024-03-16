@@ -1,5 +1,5 @@
-from prog_backend import read_session, confirm_report, edit_value, create_session
-from typing import Union, Dict, Any
+from prog_backend import read_session, confirm_report, edit_value
+from typing import Union
 import json
 from datetime import datetime
 
@@ -81,45 +81,47 @@ def start_entry_main(filename, hangout_name, duration, maker, subtask1, subtask2
     return message
 
 def report_main(filename: str, hangout_name: str, user_id: int, **finished_subtasks: Union[str, bool]) -> str:
-    # Validate input parameters
-    if not filename:
-        raise ValueError("Filename cannot be empty.")
-    if not hangout_name:
-        raise ValueError("Hangout name cannot be empty.")
-    if not isinstance(user_id, int):
-        raise ValueError("User ID must be an integer.")
-    if not finished_subtasks:
-        raise ValueError("At least one subtask must be provided to report completion.")
+    """Called directly by the report function. This
+
+    :param filename: (str) the name of the json file where the session data is stored
+    :param hangout_name: (str) the name of the hangout session being reported on
+    :param user_id: (int) the discord_id of the person who's using the /report slash command
+    :param finished_subtasks: (dict) all the subtasks that have been finished, in 'input_name': 'subtask_name' format
+    :return: (str) a message to be sent to discord which confirms that the report was successful
+    """
+    finished_subtask_names = list(finished_subtasks.values())
 
     # Read session data from the file
     session_data = read_session(filename, hangout_name)
 
+    # Make sure there's at least one subtask
+    if not finished_subtasks:
+        raise ValueError("At least one subtask must be reported complete.")
+
+    # Make sure there aren't any repeated subtasks being reported
+    if any(finished_subtask_names.count(subtask) > 1 for subtask in finished_subtask_names):
+        raise ValueError("Only report each subtask as being complete once. Do not report the same subtask twice.")
+
     # Check if the user is a participant in the hangout
     user_participant = next((participant for participant in session_data['participants'] if participant['discord_id'] == user_id), None)
     if user_participant is None:
-        raise ValueError(f"User with ID {user_id} is not a participant in the hangout '{hangout_name}'.")
+        raise ValueError(f"You were not a participant in the '{hangout_name}', and so you cannot report on it.")
 
-    # Update the status of the provided subtasks
-    completed_subtasks = []
-    for subtask_name, finished in finished_subtasks.items():
-        subtask_index = next((index for index, subtask in enumerate(session_data['subtasks']) if subtask['subtask'] == subtask_name), None)
-        if subtask_index is None:
-            raise ValueError(f"Subtask '{subtask_name}' not found in the hangout '{hangout_name}'.")
-        if session_data['subtasks'][subtask_index]['finished'] == finished:
-            raise ValueError(f"Subtask '{subtask_name}' in the hangout '{hangout_name}' is already marked as {'finished' if finished else 'not finished'}.")
-        session_data['subtasks'][subtask_index]['finished'] = finished
-        if finished:
-            completed_subtasks.append(subtask_name)
+    # Check and change the subtasks in a loop
+    for completed_subtask in finished_subtask_names:
+        # Figure out the index of the subtask within session_data['participants']
+        subtask_index = next((index for index, json_subtask in enumerate(session_data['subtasks']) if json_subtask['subtask'] == completed_subtask), None)
+        # Check to make sure the subtask hasn't already been reported to be True
+        if session_data['subtasks'][subtask_index]['finished'] == True:
+            raise ValueError(f"The subtask {completed_subtask} has already been reported as being complete before.")
 
-    # Save the updated session data
+        # Change the 'finished' value of the completed subtask to True
+        session_data['subtasks'][subtask_index]['finished'] = True
+
+    # Save the changes to the 'finished' value(s) to the json database
     edit_value(filename, hangout_name, 'subtasks', session_data['subtasks'])
 
     # Construct the message
-    completion_rate = len(completed_subtasks) / len(session_data['subtasks']) * 100
-    message = (
-        f"Report for {hangout_name}: the following objectives have been completed\n"
-        + ''.join(f'- {subtask}\n' for subtask in completed_subtasks)
-        + f"{hangout_name} is {completion_rate:.0f}% complete!"
-    )
-    print(message)
+    message = confirm_report(filename, hangout_name, **finished_subtasks)
+
     return message
