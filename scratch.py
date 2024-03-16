@@ -1,50 +1,49 @@
-from test_util import make_example_database
-from prog_backend import edit_value, read_session, confirm_report
-make_example_database()
+import pytest
+import os
+import json
+from datetime import datetime
+
+from test_util import make_example_database, delete_test_file
+from prog_cmds_and_funcs import start_entry_main
+
 filename = 'database_for_testing.json'
-"""
-expected_participants = [{'nick': 'Raspberry Kitten', 'discord_id': 1015276712948400148}]
-removed_participant = {'nick': 'Grey', 'discord_id': 319472632493768705}
-edit_value(filename=filename, session_name='Quiet murder', field="participants", new_value=removed_participant,
-               change='remove')
-results = read_session(filename, 'Quiet murder')
-test_participants = [participant for participant in results['participants']]
-assert all([participant in test_participants for participant in expected_participants])
-assert removed_participant not in test_participants
-assert len(expected_participants) == len(test_participants)"""
 
-"""Flips the all subtasks to True, then runs confirm_report to make sure the message is coming out right and
-    there are no errors."""
-    # Establish what we want the message to look like
-expected_message = (f"Report for Sample Hangout: the following objectives have been completed"
-                        f"\n- subtask1"
-                        f"\n- subtask2"
-                        f"\n- subtask3"
-                        f"\n- subtask4"
-                        f"\n- subtask5"
-                        f"\nSample Hangout is 100% complete!")
 
-    # Flip the desired subtasks to True
-edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=0, subsubfield='finished')
-edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=1, subsubfield='finished')
-edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=2, subsubfield='finished')
-edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=3, subsubfield='finished')
-edit_value(filename, 'Sample Hangout', 'subtasks', True,
-               subfield=4, subsubfield='finished')
+class EmptyUser:
+    def __init__(self, display_name=None, username=None, user_id=None):
+        self.display_name = display_name
+        self.username = username
+        self.id = user_id
 
-    # Run confirm_create_sesssion, saving the string it returns as `message`
-message = confirm_report(filename, 'Sample Hangout',
-    fin_task1="subtask1",
-    fin_task2="subtask2",
-    fin_task3="subtask3",
-    fin_task4="subtask4",
-    fin_task5="subtask5")
+Kat = EmptyUser('Kat', 'dorkiedeer', 583730259409633310)
+Posi = EmptyUser('Anytime', 'mr.positions', 309330832047210497)
 
-    # Check to make sure the string that confirm_create_session returned matches exactly with the expected message
+make_example_database()
+
+expected_message = (f"A hangout session, Eat vegetables, has been started between Kat and Anytime. This "
+                        f"session will last 125 minutes, during which the following five objectives should be "
+                        f"completed:"
+                        f"\n- Go to the kitchen"
+                        f"\n- Open the fridge"
+                        f"\n- Take a bag of salad mix"
+                        f"\n- Eat it"
+                        f"\n- Spit out the plastic"
+                        f"\nDon't forget to report your achievements. Anchors aweigh!")
+
+# Run start_entry_main, saving the string it returns as `message`
+message = start_entry_main(filename=filename,
+                           hangout_name='Eat vegetables',
+                           duration=125,
+                           maker=Kat,
+                           subtask1='Go to the kitchen',
+                           subtask2='Open the fridge',
+                           subtask3='Take a bag of salad mix',
+                           subtask4='Eat it',
+                           subtask5='Spit out the plastic',
+                           participant2=Posi)
+
+# Check to make sure the string that confirm_create_session returned matches exactly with the expected message
+print(message)
+print()
+print(expected_message)
 assert message == expected_message
-
-confirm_report(filename,"Sample Hangout",**kwarg)
