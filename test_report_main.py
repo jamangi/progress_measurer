@@ -1,12 +1,14 @@
 """report_main gets called directly by the front-end file when the /start_entry command is used in Discord. This is a
-function that flips all the given subtasks from False to True, then uses confirm_report to confirm that a subtask
-'finished' value has been flipped to True, then creates a message to be sent to Discord."""
+function that flips all the given subtasks from False to True, then uses confirm_report to confirm that a subtask's
+'finished' value has been flipped to True. Finally, it then creates a message to be sent to Discord."""
 
 import pytest
 
 from test_util import make_example_database, delete_test_file
 from prog_backend import read_session, edit_value
 from prog_cmds_and_funcs import report_main
+
+filename = 'database_for_testing.json'
 
 
 @pytest.fixture(scope='session', autouse=True)
