@@ -29,12 +29,12 @@ def test_read_json():
         # "filename": filename, <- filename not added to the json file by create
         "hangout_name": hangout_title,
         "duration": 60,
-        "maker": {username_key: "haltiseelyokade", discord_id_key: 1},  # username instead of nickname
+        "maker": {username_key: "haltiseelyokade", discord_id_key: 1015276712948400148},  # username instead of nickname
         "participants": [  # converts participants into a list and includes the maker
-            {nickname_key: "Haltise", discord_id_key: 1},
-            {nickname_key: "Zatch", discord_id_key: 2},
-            {nickname_key: "Kyo", discord_id_key: 3},
-            {nickname_key: "Berenger", discord_id_key: 4},
+            {nickname_key: "Haltise", discord_id_key: 1015276712948400148},
+            {nickname_key: "Zatch", discord_id_key: 583730259409633310},
+            {nickname_key: "Kyo", discord_id_key: 309330832047210497},
+            {nickname_key: "Berenger", discord_id_key: 319472632493768705},
         ],
         "subtasks": [  # converts subtasks into a list
             {'subtask': "Task A", 'finished': False},
