@@ -8,16 +8,6 @@ from test_util import make_example_database, delete_test_file
 from prog_backend import read_session, edit_value
 from prog_cmds_and_funcs import report_main
 
-filename = 'database_for_testing.json'
-report_main(filename=filename,
-            hangout_name='report test',
-            user_id=1015276712948400148,
-            finished_subtask1='subtask1',
-            finished_subtask2='subtask2',
-            finished_subtask3='subtask3',
-            finished_subtask4='subtask4',
-            finished_subtask5='subtask5')
-
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_teardown():
