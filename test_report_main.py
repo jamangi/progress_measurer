@@ -8,6 +8,8 @@ from test_util import make_example_database, delete_test_file
 from prog_backend import read_session, edit_value
 from prog_cmds_and_funcs import report_main
 
+filename = 'database_for_testing.json'
+
 
 @pytest.fixture(scope='session', autouse=True)
 def setup_teardown():
