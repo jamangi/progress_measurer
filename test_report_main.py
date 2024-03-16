@@ -1,6 +1,6 @@
 """report_main gets called directly by the front-end file when the /start_entry command is used in Discord. This is a
-function that flips all the given subtasks from False to True, then uses confirm_report to confirm that a subtask
-'finished' value has been flipped to True, then creates a message to be sent to Discord."""
+function that flips all the given subtasks from False to True, then uses confirm_report to confirm that a subtask's
+'finished' value has been flipped to True. Finally, it then creates a message to be sent to Discord."""
 
 import pytest
 
