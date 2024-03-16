@@ -48,4 +48,3 @@ message = confirm_report(filename, 'Sample Hangout',
 assert message == expected_message
 
 confirm_report(filename,"Sample Hangout",**kwarg)
-history_main(filename, hangout_name)
