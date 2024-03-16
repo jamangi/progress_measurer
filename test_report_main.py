@@ -78,7 +78,7 @@ def test_one_subtask_reported():
                         f"\nSample Hangout is 20% complete!")
 
     # Run report_main, saving the string it returns as `message`
-    message = report_main(filename, 'Sample Hangout', fin_task1="subtask2")
+    message = report_main(filename, 'Sample Hangout', 1, fin_task1="subtask2")
 
     # Check to make sure the 'finished' value was flipped to True
     results = read_session(filename, 'Sample Hangout')
@@ -120,7 +120,7 @@ def test_five_subtasks_reported():
                subfield=4, subsubfield='finished')
 
     # Run report_main, saving the string it returns as `message`
-    message = report_main(filename, 'Sample Hangout',
+    message = report_main(filename, 'Sample Hangout', 1,
                           fin_task1="subtask1",
                           fin_task2="subtask2",
                           fin_task3="subtask3",
