@@ -68,9 +68,9 @@ def start_entry_main(filename, hangout_name, duration, maker, subtask1, subtask2
     data = read_session(filename, hangout_name)
 
     # Generate message for Discord
-    message = (f"A hangout session, {hangout_name}, has been started between {maker.display_name} and "
+    message = (f"A hangout session, {hangout_name}, has been started between "
                f"{' and '.join([p['nick'] for p in data['participants']])}. This session will last {duration} minutes, during which the following "
-               f"five objectives should be completed:\n"
+               f"five objectives should be completed:"
                f"\n- {subtask1}"
                f"\n- {subtask2}"
                f"\n- {subtask3}"
