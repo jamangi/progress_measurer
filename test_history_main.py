@@ -4,7 +4,7 @@ to create a message to be sent to Discord."""
 import pytest
 
 from test_util import make_example_database, delete_test_file
-from prog_cmds_and_funcs import history_main
+from prog_cmds_and_funcs import history_main, start_entry_main, report_main
 
 filename = 'database_for_testing.json'
 
