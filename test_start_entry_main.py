@@ -147,6 +147,21 @@ def test_subtasks_too_long_error():
                          participant2=Posi)
 
 
+def test_hangout_name_already_in_use_error():
+    """Tests to make sure hangout names that match existing hangouts are made unavailable."""
+    with pytest.raises(ValueError):
+        start_entry_main(filename=filename,
+                         hangout_name='Quiet murder',
+                         duration=125,
+                         maker=Kat,
+                         subtask1='Go to the kitchen',
+                         subtask2='Open the fridge',
+                         subtask3='Take a bag of salad mix',
+                         subtask4='Eat it',
+                         subtask5='Spit out the plastic',
+                         participant2=Kat)
+
+
 def test_self_among_participants_error():
     """Tests to make sure an exception is raised if the maker is also submitted as one of the participants."""
     with pytest.raises(ValueError):
@@ -205,13 +220,10 @@ def test_duration_over_one_day_error():
 
 
 def test_create_json():
-    if os.path.exists(filename):
-        os.remove(filename)
-
     username_key = "username"
     nickname_key = "nick"
     discord_id_key = "discord_id"
-    hangout_title = "Sample Hangout"
+    hangout_title = "OG Sample Hangout"
 
     data1 = {
         "filename": filename,
@@ -263,7 +275,7 @@ def test_create_json():
     with open(filename, mode='r', encoding='utf-8') as f:
         res = json.load(f)
         assert isinstance(res, list)
-        data = res[0]  # the entry
+        data = [session for session in res if session['hangout_name'] == hangout_title][0]  # the entry
         assert isinstance(data, dict) and data.get('maker')
         assert data.get('duration') and data['duration'] == 60
         assert data.get('maker') == data2['maker']

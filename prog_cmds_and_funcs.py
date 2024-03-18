@@ -1,4 +1,4 @@
-from prog_backend import read_session, confirm_report, edit_value, create_session
+from prog_backend import read_session, confirm_report, edit_value, create_session, confirm_create_session
 from typing import Union
 import json
 from datetime import datetime
@@ -56,27 +56,26 @@ def start_entry_main(filename, hangout_name, duration, maker, subtask1, subtask2
         raise ValueError("Hangout name is too long")
     if len(subtask1) > 80 or len(subtask2) > 80 or len(subtask3) > 80 or len(subtask4) > 80 or len(subtask5) > 80:
         raise ValueError("Subtask name is too long")
-    if maker.id == participant2.id:
-        raise ValueError("Maker cannot be among the participants")
     if duration > 1440:
         raise ValueError("Duration cannot be greater than one day")
+
+    # Check whether the hangout name is already in use by another hangout session
+    name_in_use = True
+    try:
+        read_session(filename, hangout_name)
+    except ValueError as e:
+        if e.args[0] == f"No session found for hangout: {hangout_name}":
+            name_in_use = False
+    if name_in_use:
+        raise ValueError(f"This hangout name, {hangout_name}, is already in use. Please select a different name")
+
 
     # Create hangout session data
     create_session(filename, hangout_name, duration, maker, subtask1, subtask2,
                    subtask3, subtask4, subtask5, participant2, participant3, participant4)
 
-    data = read_session(filename, hangout_name)
-
     # Generate message for Discord
-    message = (f"A hangout session, {hangout_name}, has been started between "
-               f"{' and '.join([p['nick'] for p in data['participants']])}. This session will last {duration} minutes, during which the following "
-               f"five objectives should be completed:"
-               f"\n- {subtask1}"
-               f"\n- {subtask2}"
-               f"\n- {subtask3}"
-               f"\n- {subtask4}"
-               f"\n- {subtask5}"
-               f"\nDon't forget to report your achievements. Anchors aweigh!")
+    message = confirm_create_session(filename, hangout_name)
 
     return message
 
@@ -89,7 +88,7 @@ def report_main(filename: str, hangout_name: str, user_id: int, **finished_subta
     :param finished_subtasks: (dict) all the subtasks that have been finished, in 'input_name': 'subtask_name' format
     :return: (str) a message to be sent to discord which confirms that the report was successful
     """
-    finished_subtask_names = list(finished_subtasks.values())
+    finished_subtask_names = [subtask for subtask in finished_subtasks.values() if subtask]
 
     # Read session data from the file
     session_data = read_session(filename, hangout_name)

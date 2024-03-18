@@ -85,7 +85,7 @@ def test_not_flipped_error():
                                          "or contact someone familiar with the code."):
         edit_value(filename, 'Quiet murder', 'subtasks', False,
                    subfield=4, subsubfield='finished')
-        confirm_report(filename, 'Sample Hangout', fin_task1="Write someone's name down in your magic notebook")
+        confirm_report(filename, 'Quiet murder', fin_task1="Write someone's name down in your magic notebook")
 
 
 if __name__ == "__main__":

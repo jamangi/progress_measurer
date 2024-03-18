@@ -41,7 +41,7 @@ def create_session(filename, hangout_name, duration, maker, subtask1, subtask2, 
 
     # Create the entry
     new_entry = {'hangout_name': hangout_name,
-                 'duration': duration,
+                 'duration': int(duration),
                  'maker': {'username': maker.username, 'discord_id': int(maker.id)},
                  'participants': participants,
                  'subtasks': [{'subtask': subtask1, 'finished': False},
@@ -59,8 +59,6 @@ def create_session(filename, hangout_name, duration, maker, subtask1, subtask2, 
     entries.append(new_entry)
     with open(filename, "w") as entries_file:
         json.dump(entries, entries_file)
-
-
 
 
 def read_session(filename: str, hangout_name: str) -> Dict[str, Any]:
@@ -172,7 +170,7 @@ def confirm_create_session(filename: str, hangout_name: str) -> str:
 
     message = (
         f"A hangout session, {hangout_name}, has been started between {participant_names}. This "
-        f"session will last {session_data['duration']} minutes, during which the following {num_tasks_str} {objectives_label} should be "
+        f"session will last {int(session_data['duration'])} minutes, during which the following {num_tasks_str} {objectives_label} should be "
         f"completed:\n"
         f"{objectives_str}\n"
         f"Don't forget to report your achievements. Anchors aweigh!"
@@ -183,15 +181,16 @@ def confirm_create_session(filename: str, hangout_name: str) -> str:
 def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
     session_data = read_session(filename, hangout_name)
 
-    completed_subtasks = []
-    for key, value in kwargs.items():
-        if value.startswith('subtask'):  # Check if the value starts with 'subtask'
-            subtask_number = int(value.split('subtask')[1])  # Extract the subtask number
-            subtask_name = f'subtask{subtask_number}'  # Format the subtask name
-            completed_subtasks.append(f'- {subtask_name}')
-
-    if not completed_subtasks:
-        raise ValueError("The subtask that was supposed to be reported has not been recorded as finished. This is probably an issue with the code. The data file may be compromised. Do not use any more commands and immediately investigate or contact someone familiar with the code.")
+    # Figure out whether the subtasks have been flipped to true, raise an error if not
+    completed_subtasks = [f"- {subtask}" for subtask in kwargs.values() if subtask]
+    for subtask in completed_subtasks:
+        subtask_index = next((index for index, json_subtask in enumerate(session_data['subtasks']) if
+                             json_subtask['subtask'] == subtask[2:]), None)
+        if session_data['subtasks'][subtask_index]['finished'] is False:
+            raise ValueError(f"The subtask that was supposed to be reported has not been recorded as "
+                             f"finished. This is probably an issue with the code. The data file may be compromised. "
+                             f"Do not use any more commands and immediately investigate or contact someone familiar "
+                             f"with the code.")
 
     total_tasks = len(session_data['subtasks'])  # Total number of subtasks
     completed_count = len(completed_subtasks)  # Number of completed subtasks
