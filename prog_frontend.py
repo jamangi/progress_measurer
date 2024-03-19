@@ -165,7 +165,8 @@ async def report_subtask_autocomplete(ctx: AutocompleteContext):
     # Fetch the list of subtasks for the chosen session from the json. Make sure you respond within three seconds
     session_name = ctx.args[0]
     session_data = read_session(config("FILENAME"), session_name)
-    subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']]
+    subtasks_list = [{'name': subtask['subtask'], 'value': subtask['subtask']} for subtask in session_data['subtasks']
+                     if subtask['subtask'] not in ctx.args[0] and subtask['finished'] is False]
     await ctx.send(choices=subtasks_list)
 
 # -------------------------------------------------------------------------------------------------------------------- #

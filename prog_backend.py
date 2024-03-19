@@ -195,12 +195,14 @@ def confirm_report(filename: str, hangout_name: str, **kwargs) -> str:
     total_tasks = len(session_data['subtasks'])  # Total number of subtasks
     completed_count = len(completed_subtasks)  # Number of completed subtasks
     percentage = completed_count / total_tasks * 100  # Calculate completion percentage
+    total_complete_tasks = [1 for subtask in session_data['subtasks'] if subtask['finished'] is True]
+    total_complete_percentage = int(100 * sum(total_complete_tasks)/5)
 
     # Generate the message using the expected subtask names
     message = (
-        f"Report for {hangout_name}: the following objectives have been completed\n"
+        f"Report for {hangout_name}: the following objectives have just been completed\n"
         f"{chr(10).join(completed_subtasks)}\n"
-        f"{hangout_name} is {int(percentage)}% complete!"
+        f"{hangout_name} is {int(percentage)}% closer to completion, for a total of {total_complete_percentage}!"
     )
 
     return message
