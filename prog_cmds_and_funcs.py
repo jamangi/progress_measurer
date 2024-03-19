@@ -32,13 +32,14 @@ def history_main(filename: str, hangout_name: str) -> str:
     completion_rate = len(completed_subtasks) / len(subtasks) * 100 if subtasks else 0
 
     # Format timestamps
-    formatted_start_time = f"<t:{start_time}:f>"
-    formatted_end_time = f"<t:{end_time}:t>"
+    formatted_start_time = f"<t:{int(start_time)}:f>"
+    formatted_end_time = f"<t:{int(end_time)}:t>"
 
     # Construct the message
     message = (
-        f"*{hangout_name}*:"
-        f"Once upon a time (and that time was the {duration} minutes between {formatted_start_time} and {formatted_end_time}), {participant_names} hung out. {hangout_name} was the "
+        f"**{hangout_name}**:"
+        f"\nOnce upon a time (and that time was the {duration} minutes between {formatted_start_time} and "
+        f"{formatted_end_time}), {participant_names} hung out. {hangout_name} was the "
         f"objective, and to do that, here's what our busy bee(s) set out to do:\n"
     )
 
